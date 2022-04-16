@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script  src="/js/jquery.js"></script> 
+    <script src="/js/bootstrap.min.js"></script>
+    <title>Document</title>
+
+    <style>
+    body
+    {
+    background-image: url("https://images.unsplash.com/photo-1472803828399-39d4ac53c6e5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MTB8NDkxODM2fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=900&q=60");   
+    background-size: cover;
+    background-attachment: fixed;
+    }
+
+    #fullBlog{
+background-color: rgb(245,245,245);   
+width: 70%;
+margin-top: 3em;
+}
+#blogTitles{
+    padding-top: 1.2em;
+    font-family: cursive;
+    font-size: x-large ;
+    display: block;  
+   text-align: center;
+   margin-bottom: 1em;
+}
+
+#blogAuthors{
+  display: block; 
+  margin-bottom: 1.2em;
+  font-family: cursive;
+  font-size: 14px; 
+  color: rgb(131, 131, 134);
+}
+#blogContents{
+   
+  
+}
+#blogTagss{
+   margin-top: 20px;
+   font-size: 13px; 
+   color: rgb(131, 131, 134);
+}
+
+    </style>
+
+</head>
+<body>
+    <%- include('../partials/navbar') %>
+
+<div class="container border-3 text-dark mb-5"  id="fullBlog">
+    <div class="container"> 
+        <div class="container">          
+
+    <div class="row">        
+    <div id="blogTitles" class="col-9"><%=  review.title %></div>
+    <div class="col-3 d-flex flex-row-reverse">
+        <form class="d-inline-block" action="/reviews/<%=review._id%>/edit">
+          <button class="mt-4" style="border: none; background-color: rgba(0,0,0,0); border-left: 1px solid #838386;" title="edit"><i class="material-icons">edit</i></button>
+        </form>
+      
+        <form class="d-inline-block" action="/reviews/<%=review._id%>?_method=DELETE" method="POST">
+        <button class="mt-4" style="border: none; background-color: rgba(0,0,0,0);" title="delete"><i class="material-icons">delete</i></button>
+      </form>
+      </div>
+    </div>
+
+  <div id="blogAuthors" class="mt-2">Written by <b> <%= review.author  %> </b>, 06/09/2021</div>
+
+  <div id="blogContents"> <%=  review.content %> </div>
+
+
+  <div id="blogTagss" style="height: 30px;">
+     Tags: #<%= review.tag  %>
+  </div>
+
+  <div style="border-top: 1px solid #838386; height: 10px;"></div>
+
+  </div>
+  </div>
+  </div>
+
+
+
+</body>
+</html>

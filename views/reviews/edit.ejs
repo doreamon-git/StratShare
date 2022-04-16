@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <script  src="/js/jquery.js"></script> 
+    <script src="/js/bootstrap.min.js"></script>
+    <title>Document</title>
+    <style>
+        body{
+   height: 100vh;
+   background-image: url("https://images.unsplash.com/photo-1472803828399-39d4ac53c6e5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MTB8NDkxODM2fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=900&q=60");
+  background-size: cover;
+ background-attachment: fixed;
+ }
+     </style>
+</head>
+<body>
+    <%- include('../partials/navbar') %>
+    
+
+<section class="h-75 gradient-custom mb-5 mt-5 d-flex justify-content-center">
+    <div class="container py-5 h-100  w-75">
+      <div class="row d-flex justify-content-center align-items-center">
+        
+          <div class="card text-white mb-5" style="border-radius: 1rem; background-color: rgba(0,0,0,0.84);">
+            <div class="card-body p-5 text-center">
+  
+              <div class="md-5 mt-md-4 ">
+  
+                <form action="/reviews/<%=review._id%>?_method=PUT" method="POST">
+                <h2 class="fw-bold mb-2 text-uppercase">EDIT BLOG</h2>
+                <p class="text-white-50 mb-5"></p>
+
+                
+                <div class="form-outline form-white mb-5  d-flex justify-content-center">
+                  <input type="text"  name="title" class="form-control form-control-lg w-75"  value=" <%= review.title%>" required/>
+                </div>
+  
+                <div class="form-outline form-white mb-4">
+                    <textarea class="form-control form-control-lg"  name="content" rows="10"  required><%= review.content%></textarea>
+                </div>
+    
+
+                <div class="form-outline form-white mb-4 w-50">
+                  <input type="text" name="tag" class="form-control form-control-lg" value=" <%= review.tag%>" required/>
+                </div>
+  
+                <div class="row">
+                  <div class="col-7 d-flex flex-row-reverse">
+                   <button class="btn btn-outline-light btn-lg px-5 mt-3" type="submit">POST</button>
+                  </div>
+                  <div class="col-5 d-flex flex-row-reverse">
+                   <button class="text-white-50 fw-bold" style="border: none; background-color: rgba(0,0,0,0);" type="submit" formaction="/reviews/draft/<%=review._id%>?_method=PUT" method="POST">Save as Draft</button>
+                  </div>
+                </div>
+              
+              </form>
+              </div>
+  
+  
+            </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+</body>
+</html>
