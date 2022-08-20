@@ -1,3 +1,7 @@
+if(process.env.NODE_ENV !== "productin"){
+    require('dotenv').config();
+}
+
 const express =require('express')
 const app = express();
 const mongoose = require('mongoose');
@@ -8,17 +12,18 @@ const flash = require('connect-flash')
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const User = require('./models/user')
-
-
 const userRoutes = require('./routes/user')
 const {isLoggedIn} = require('./routes/middleware')
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/blogDB';
+const MongoDBStore = require("connect-mongodb-session")(session);
 
-mongoose.connect('mongodb://localhost:27017/blogDB')
+//mongodb://localhost:27017/blogDB
+mongoose.connect(dbUrl)
 .then(()=>{
   console.log("CONNECTION ESTABLISHED!!!");
 })
 .catch(err =>{ 
-console.log("CONNECTION FAILED!!!");
+console.log(err);
 });
 const Review = require('./models/review');
 const res = require('express/lib/response');
@@ -27,12 +32,25 @@ const res = require('express/lib/response');
 app.set('view engine', 'ejs')
 app.use(express.urlencoded({extended:true}))
 app.use(methodOverride('_method'))
+
+const store = new MongoDBStore({
+    url: dbUrl,
+    secret: 'NothingSerious',
+    touchAfter: 24*60*60
+});
+
+store.on("error", function(e){
+    console.log("SESSION STORE ERROR")
+})
+
 const sessionConfig={
+    store,
     secret: 'NothingSerious',
     resave: false,
     saveUninitialized: false
 }
 app.use(session(sessionConfig))
+
 app.use(flash())
 app.use(passport.initialize())
 app.use(passport.session())
@@ -48,9 +66,9 @@ app.use((req, res, next)=>{
     next();
 })
 
-app.use('/', userRoutes)
-
 // Routing starts from here
+
+app.use('/', userRoutes)
 
 
 app.use(express.static('public1'))
@@ -60,6 +78,7 @@ app.get('/reviews', async (req, res)=>{
 const reviews = await Review.find({draft:false})
 res.render('reviews/index', {reviews})
 })
+
 
 app.get('/reviews/new', isLoggedIn , (req, res)=>{
     res.render('reviews/new')
@@ -92,17 +111,29 @@ app.get('/reviews/:id/edit', async (req, res)=>{
     res.render('reviews/edit', {review}) 
 })
 
-app.put('/reviews/:id', async (req, res)=>{
+app.put('/reviews/:id',isLoggedIn, async (req, res)=>{
     const { id } = req.params
+    const review = await Review.findById(id)
     req.body.draft = false
-    const review = await Review.findByIdAndUpdate(id, req.body, {runValidators: true, new: true})
+    if(review.author!=req.user._id){
+       req.flash('error', 'You do not have permission');
+       return res.redirect(`/reviews/${id}`)
+    }
+    await Review.findByIdAndUpdate(id, req.body, {runValidators: true, new: true})
+    req.flash('success', 'Updated');
     res.redirect('/reviews')
 })
 
 
 app.delete('/reviews/:id', async (req, res)=>{
     const { id } = req.params
+    const review = await Review.findById(id)
+    if(review.author!=req.user._id){
+        req.flash('error', 'You do not have permission');
+        return res.redirect(`/reviews/${id}`)
+     }
     await Review.findByIdAndDelete(id)
+    req.flash('success', 'Deleted');
     res.redirect('/reviews') 
 })
 
@@ -112,7 +143,7 @@ app.post('/reviews/filter',async (req, res)=>{
   res.render('reviews/index', {reviews})       
 })
 
-app.post('/reviews/draft', async (req, res)=>{
+app.post('/reviews/draft',isLoggedIn, async (req, res)=>{
     const review = new Review(req.body)
     review.author = req.user.username
     review.draft = true
@@ -120,10 +151,16 @@ app.post('/reviews/draft', async (req, res)=>{
     res.redirect('/reviews/draft')
  })
 
- app.put('/reviews/draft/:id', async (req, res)=>{
+ app.put('/reviews/draft/:id', isLoggedIn, async (req, res)=>{
     const { id } = req.params
+    const review = await Review.findById(id)
     req.body.draft = true
-    const review = await Review.findByIdAndUpdate(id, req.body, {runValidators: true, new: true})
+    if(review.author!=req.user._id){
+        req.flash('error', 'You do not have permission');
+        return res.redirect(`/reviews/${id}`)
+     }
+    await Review.findByIdAndUpdate(id, req.body, {runValidators: true, new: true})
+    req.flash('success', 'Updated');
     res.redirect('/reviews')
 })
 
