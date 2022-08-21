@@ -18,13 +18,21 @@ const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/blogDB';
 const MongoDBStore = require("connect-mongodb-session")(session);
 
 //mongodb://localhost:27017/blogDB
-mongoose.connect(dbUrl)
-.then(()=>{
-  console.log("CONNECTION ESTABLISHED!!!");
-})
-.catch(err =>{ 
-console.log(err);
+mongoose.connect(dbUrl, {
+  useNewUrlParser: true,
+  //useCreateIndex: true,
+  //useUndefinedTopology: true,
+  //useFindAndModify: false    
 });
+
+const db=mongoose.connection;
+db.on("error", console.error.bind(console, "connection error:"));
+db.once("open", ()=>{
+    console.log("Database Connected");
+});
+
+
+
 const Review = require('./models/review');
 const res = require('express/lib/response');
 
@@ -47,7 +55,13 @@ const sessionConfig={
     store,
     secret: 'NothingSerious',
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: true,
+    cookie: {
+        httpOnly: true,
+        expires: Date.now()+ 1000*60*60*24*7,
+        maxAge: 1000*60*60*24*7
+    }
+
 }
 app.use(session(sessionConfig))
 
