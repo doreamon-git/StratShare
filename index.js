@@ -15,7 +15,7 @@ const User = require('./models/user')
 const userRoutes = require('./routes/user')
 const {isLoggedIn} = require('./routes/middleware')
 const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/blogDB';
-const MongoDBStore = require("connect-mongo");
+const MongoDBStore = require("connect-mongo").default;
 
 //mongodb://localhost:27017/blogDB
 mongoose.connect(dbUrl, {
