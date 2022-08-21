@@ -14,8 +14,8 @@ const LocalStrategy = require('passport-local')
 const User = require('./models/user')
 const userRoutes = require('./routes/user')
 const {isLoggedIn} = require('./routes/middleware')
-const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/blogDB';
-const MongoDBStore = require("connect-mongo").default;
+const dbUrl = process.env.DB_URL ;
+const MongoDBStore = require("connect-mongo");
 
 //mongodb://localhost:27017/blogDB
 mongoose.connect(dbUrl, {
