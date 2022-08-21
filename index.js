@@ -19,7 +19,7 @@ const MongoDBStore = require("connect-mongodb-session")(session);
 
 //mongodb://localhost:27017/blogDB
 mongoose.connect(dbUrl, {
-  useNewUrlParser: true,
+  useNewUrlParser: true
   //useCreateIndex: true,
   //useUndefinedTopology: true,
   //useFindAndModify: false    
