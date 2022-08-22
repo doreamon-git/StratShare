@@ -21,7 +21,7 @@ const MongoDBStore = require("connect-mongo");
 mongoose.connect(dbUrl, {
   useNewUrlParser: true,
   //useCreateIndex: true,
-  //useUndefinedTopology: true
+  useUndefinedTopology: true
   //useFindAndModify: false    
 });
 
