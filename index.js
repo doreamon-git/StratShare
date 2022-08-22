@@ -19,7 +19,7 @@ const MongoDBStore = require("connect-mongo");
 
 //mongodb://localhost:27017/blogDB
 mongoose.connect(dbUrl, {
-  useNewUrlParser: true,
+  useNewUrlParser: true
   //useCreateIndex: true,
   //useUndefinedTopology: true
   //useFindAndModify: false    
@@ -89,6 +89,10 @@ app.use('/', userRoutes)
 app.use(express.static('public1'))
 app.use(express.static('public'))
 
+app.get('/', async (req, res)=>{
+    res.render('reviews/landing')
+})    
+
 app.get('/reviews', async (req, res)=>{
 const reviews = await Review.find({draft:false})
 res.render('reviews/index', {reviews})
@@ -130,7 +134,7 @@ app.put('/reviews/:id',isLoggedIn, async (req, res)=>{
     const { id } = req.params
     const review = await Review.findById(id)
     req.body.draft = false
-    if(review.author!=req.user._id){
+    if(review.author!=req.user.username){
        req.flash('error', 'You do not have permission');
        return res.redirect(`/reviews/${id}`)
     }
@@ -140,13 +144,15 @@ app.put('/reviews/:id',isLoggedIn, async (req, res)=>{
 })
 
 
-app.delete('/reviews/:id', async (req, res)=>{
+app.delete('/reviews/:id', async (req, res)=>{ 
     const { id } = req.params
     const review = await Review.findById(id)
-    if(review.author!=req.user._id){
+    console.log(review.author)
+    console.log(req.user)
+    if(review.author!=req.user.username){
         req.flash('error', 'You do not have permission');
         return res.redirect(`/reviews/${id}`)
-     }
+     }  
     await Review.findByIdAndDelete(id)
     req.flash('success', 'Deleted');
     res.redirect('/reviews') 
@@ -170,7 +176,7 @@ app.post('/reviews/draft',isLoggedIn, async (req, res)=>{
     const { id } = req.params
     const review = await Review.findById(id)
     req.body.draft = true
-    if(review.author!=req.user._id){
+    if(review.author!=req.user.username){
         req.flash('error', 'You do not have permission');
         return res.redirect(`/reviews/${id}`)
      }
