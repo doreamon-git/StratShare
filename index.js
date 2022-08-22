@@ -42,7 +42,7 @@ app.use(express.urlencoded({extended:true}))
 app.use(methodOverride('_method'))
 
 const store = new MongoDBStore({
-    url: dbUrl,
+    mongoUrl: dbUrl,
     secret: 'NothingSerious',
     touchAfter: 24*60*60
 });
