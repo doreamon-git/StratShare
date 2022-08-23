@@ -11,7 +11,11 @@ router.get('/register', (req, res)=>(
 router.post('/register', async (req, res)=>{
    const {email, username, password} = req.body
    const user = new User({email, username})
-   await User.register(user, password)
+   try{
+       await User.register(user, password)
+   }catch(e){
+    res.render('users/register')
+   }
    req.flash('success', 'Welcome to StratShare')
    res.redirect('/reviews')
 })

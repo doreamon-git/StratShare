@@ -144,7 +144,7 @@ app.put('/reviews/:id',isLoggedIn, async (req, res)=>{
 })
 
 
-app.delete('/reviews/:id', async (req, res)=>{ 
+app.delete('/reviews/:id', isLoggedIn, async (req, res)=>{ 
     const { id } = req.params
     const review = await Review.findById(id)
     console.log(review.author)
