@@ -39,12 +39,26 @@
                   <input type="text"  name="title" class="form-control form-control-lg w-75"  value=" <%= review.title%>" required/>
                 </div>
   
-                <div class="form-outline form-white mb-4">
+            <!--    <div class="form-outline form-white mb-4">
                     <textarea class="form-control form-control-lg"  name="content" rows="10"  required><%= review.content%></textarea>
                 </div>
-    
+            -->
 
-                <div class="form-outline form-white mb-4 w-50">
+            <div class="entry">
+              <script src="https://cdn.ckeditor.com/4.9.1/standard/ckeditor.js"></script>
+            
+            <div class="body">
+             <textarea name="content"> <%- review.content %> </textarea>
+               <script>
+                   CKEDITOR.replace( 'content' );
+               </script>
+              
+            </div>
+           </div>
+
+            
+
+                <div class="form-outline form-white mt-3 mb-4 w-50">
                   <input type="text" name="tag" class="form-control form-control-lg" value=" <%= review.tag%>" required/>
                 </div>
   

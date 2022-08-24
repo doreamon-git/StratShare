@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <script  src="/js/jquery.js"></script> 
     <script src="/js/bootstrap.min.js"></script>
+    
     <title>Document</title>
 
 <style>
@@ -20,7 +21,7 @@ body{
 
   #fullBlog{
 background-color: rgb(245,245,245);   
-width: 70%;
+width: 72%;
 margin-top: 3em;
 }
 #blogTitles{
@@ -39,7 +40,7 @@ margin-top: 3em;
   color: rgb(131, 131, 134);
 }
 #blogContents{
-   height:95px;
+   height:140px;
    overflow: hidden;
 }
 #blogTagss{
@@ -92,7 +93,7 @@ margin-top: 3em;
     <div id="blogTitles"><%=  review.title %></div>
   <div id="blogAuthors" class="mt-2">Written by <b> <%= review.author  %> </b></div>
 
-  <div id="blogContents"> <%=  review.content %> </div>
+  <div id="blogContents"> <%-  review.content %> </div>
 
   <div class="pt-3" id="blogContinues"><a href="/reviews/<%= review._id %>">Continue reading</a></div>
 

@@ -16,6 +16,8 @@ const userRoutes = require('./routes/user')
 const {isLoggedIn} = require('./routes/middleware')
 const dbUrl = process.env.DB_URL ;
 const MongoDBStore = require("connect-mongo");
+const jsdom = require("jsdom")
+const {JSDOM} = jsdom
 
 //mongodb://localhost:27017/blogDB
 mongoose.connect(dbUrl, {
@@ -112,6 +114,7 @@ app.get('/reviews/draft', isLoggedIn ,async (req, res)=>{
 app.get('/reviews/:id', async (req, res)=>{
    const { id } = req.params
    const review = await Review.findById(id)
+
    res.render('reviews/show', { review })  
 })
 
@@ -147,8 +150,6 @@ app.put('/reviews/:id',isLoggedIn, async (req, res)=>{
 app.delete('/reviews/:id', isLoggedIn, async (req, res)=>{ 
     const { id } = req.params
     const review = await Review.findById(id)
-    console.log(review.author)
-    console.log(req.user)
     if(review.author!=req.user.username){
         req.flash('error', 'You do not have permission');
         return res.redirect(`/reviews/${id}`)
