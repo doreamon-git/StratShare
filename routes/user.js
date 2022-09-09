@@ -31,7 +31,7 @@ res.redirect('/reviews')
 
 router.get('/logout', (req, res)=>{
     req.logout()
-    res.redirect('/reviews')
+    res.redirect('/')
 })
 
 

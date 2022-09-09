@@ -23,14 +23,23 @@ body{
  background-attachment: fixed;
       }
 
-  #fullBlog{
+
+#fullBlog{
 background-color: rgb(245,245,245);   
-width: 72%;
+width:72%;
 margin-top: 3em;
 }
+
+@media screen and (max-width: 800px) {
+  #fullBlog {
+    width: 90%;
+  }
+}
+
+
 #blogTitles{
     padding-top: 1.2em;
-    font-family: cursive;
+    font-family: cursive, 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     font-size: x-large ;
     display: block;  
    text-align: center;
@@ -39,7 +48,7 @@ margin-top: 3em;
 #blogAuthors{
   display: block; 
   margin-bottom: 1.2em;
-  font-family: cursive;
+  font-family: cursive, 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   font-size: 14px; 
   color: rgb(131, 131, 134);
 }
@@ -101,8 +110,8 @@ margin-top: 3em;
 
 <% for(let review of reviews){ %> 
 
-  <div class="container border-3 text-dark mb-5"  id="fullBlog">
-    <div class="container"> 
+  <div class="container border-1 text-dark mb-5"  id="fullBlog">
+    
         <div class="container">          
 
     <div id="blogTitles"><%=  review.title %></div>
@@ -120,7 +129,7 @@ margin-top: 3em;
 
 
   </div>
-  </div>
+  
   </div>
 
 <% } %> 

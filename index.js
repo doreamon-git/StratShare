@@ -92,6 +92,7 @@ app.use(express.static('public1'))
 app.use(express.static('public'))
 
 app.get('/', async (req, res)=>{
+    req.flash("success", "Welcome");
     res.render('reviews/landing')
 })    
 
@@ -114,8 +115,7 @@ app.get('/reviews/draft', isLoggedIn ,async (req, res)=>{
 app.get('/reviews/:id', async (req, res)=>{
    const { id } = req.params
    const review = await Review.findById(id)
-
-   res.render('reviews/show', { review })  
+   res.render('reviews/show', { review})  
 })
 
 app.post('/reviews',isLoggedIn ,async (req, res)=>{
