@@ -19,6 +19,15 @@ const reviewSchema = new mongoose.Schema({
  draft: {
      type: Boolean,
      default: false
+ },
+ comments: [
+    {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Comment'
+    }
+ ],
+ publishDate: {
+    type: String
  }
 })
 

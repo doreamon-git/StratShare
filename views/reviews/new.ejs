@@ -9,12 +9,18 @@
     <script src="/js/bootstrap.min.js"></script>
 
     <style>
-       body{
+
+
+
+body{
+        /*
   height: 100vh;
   background-image: url("https://images.unsplash.com/photo-1472803828399-39d4ac53c6e5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MTB8NDkxODM2fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=900&q=60");
   background-size: cover;
  background-attachment: fixed;
- }
+*/ 
+background-color: #f3f3f3;
+}
 
 #blogPostDiv{
   width: 72%;
@@ -33,11 +39,11 @@
     <%- include('../partials/navbar') %>
 
 
-<section class="h-75 gradient-custom mb-5 mt-5 d-flex justify-content-center">
+<section class="h-75 gradient-custom mb-2 mt-2 d-flex justify-content-center">
     <div class="container py-5 h-100 " id="blogPostDiv">
       <div class="row d-flex justify-content-center align-items-center ">
         
-          <div class="card text-white mb-5" style="border-radius: 1rem; background-color:rgba(0,0,0,0.84); ">
+          <div class="card text-black mb-5" style="border-radius: 0em; background-color: #f8f8f8; ">
             <div class="card-body p-lg-5 p-md-5 p-sm-1 text-center">
   
               <div class="md-5 mt-md-4 ">
@@ -48,7 +54,7 @@
 
                 
                 <div class="form-outline form-white mb-5  d-flex justify-content-center">
-                  <input type="text"  name="title" class="form-control form-control-lg w-75"  placeholder="Title of the Blog" required/>
+                  <input type="text"  name="title" class="form-control form-control-lg w-75"  placeholder="Enter topic title..." required/>
                 </div>
   <!--
                 <div class="form-outline form-white mb-4">
@@ -68,15 +74,15 @@
                </div>
 
                 <div class="form-outline form-white mb-4 mt-3 w-50">
-                  <input type="text" name="tag" class="form-control form-control-lg" placeholder="eg. #binary search #graph" required/>
+                  <input type="text" name="tag" class="form-control form-control-lg" placeholder="Tag your topic (e.g. binarySearch twoPointer)" required/>
                 </div>
 
               <div class="row">
                 <div class="col-7 d-flex flex-row-reverse">
-                 <button class="btn btn-outline-light btn-lg px-5 mt-3" type="submit">POST</button>
+                 <button class="btn btn-primary btn-lg px-5 mt-3 btn-md" type="submit" style="background-color: #4c9cdf;">POST</button>
                 </div>
                 <div class="col-5 d-flex flex-row-reverse">
-                 <button class="text-white-50 fw-bold" style="border: none; background-color: rgba(0,0,0,0);" type="submit" formaction="/reviews/draft" method="POST">Save as Draft</button>
+                 <button class="text-black-50 fw-bold" style="border: none; background-color: rgba(0,0,0,0);" type="submit" formaction="/reviews/draft" method="POST">Save as Draft</button>
                 </div>
               </div>
 
@@ -90,7 +96,12 @@
     </div>
   </section>
 
-
+  <div class="d-flex flex-column justify-content-end" style="height:300px; background-color:#091e5c ;">
+    <div class="d-flex justify-content-center" style="height:50px; background-color:#05133c ;">
+      <div style="color: #999999; font-size: 15px; padding-top: 15px; ">©2022 StratShare All rights reserved</div>
+  </div>
+  </div>
+    
 
 </body>
 </html>

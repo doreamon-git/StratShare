@@ -17,20 +17,23 @@
 <style>
 
 body{
+  /*
   background-image: url("https://images.unsplash.com/photo-1472803828399-39d4ac53c6e5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MTB8NDkxODM2fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=900&q=60"); 
   
  background-size: cover;
  background-attachment: fixed;
-      }
-
-
-#fullBlog{
-background-color: rgb(245,245,245);   
-width:72%;
-margin-top: 3em;
+*/    
+background-color: #f3f3f3;
 }
 
-@media screen and (max-width: 800px) {
+#fullBlog{
+background-color: white;   
+width:72%;
+margin-top: 3em;
+box-shadow: 0 1px 1px 0 rgb(159 167 194 / 40%);
+}
+
+@media screen and (max-width: 1000px) {
   #fullBlog {
     width: 90%;
   }
@@ -38,9 +41,9 @@ margin-top: 3em;
 
 
 #blogTitles{
+  font-family:   'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     padding-top: 1.2em;
-    font-family: cursive, 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    font-size: x-large ;
+    font-size: 30px;
     display: block;  
    text-align: center;
 }
@@ -48,13 +51,18 @@ margin-top: 3em;
 #blogAuthors{
   display: block; 
   margin-bottom: 1.2em;
-  font-family: cursive, 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-family: 'Segoe UI';
   font-size: 14px; 
   color: rgb(131, 131, 134);
 }
 #blogContents{
    height:140px;
    overflow: hidden;
+   color: #000000d8;
+   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+    font-variant: tabular-nums;
+    line-height: 1.5;
+    font-size: 16px;
 }
 #blogTagss{
    margin-top: 1.2em;
@@ -78,21 +86,26 @@ margin-top: 3em;
   <section class=" gradient-custom">
     <div class="container mt-5">
       <div class="row d-flex justify-content-center align-items-center h-100">
-        <div class="col-md-12 col-xl-10 ">
-          <div class="card text-white" style="border-radius: 1rem; background-color: rgba(0,0,0,0.4); ">
+        <div class="col-md-10 col-xl-8 ">
+          <div class="card text-white" style="border-radius: 1rem; background-color: white; box-shadow: 0 1px 1px 0 rgb(159 167 194 / 40%);">
             <div class="card-body p-2 text-center">
   
               <div class="md-5 mt-md-4 ">
   
                 <form action="/reviews/filter" method="POST">
-                <h2 class="  text-uppercase" style="color:rgb(136, 136, 241);">Filter</h2>
+                <h3 class="  text-uppercase" style="color:black;">Filter</h3>
                 <p class="text-white-50 mb-4"></p>
-  
+ 
+                <div class="px-3">
                 <div class="form-outline form-white mb-4" >
-                  <input type="text" id="username" name="username" class="form-control form-control-lg" placeholder="Username" style="color: white; background-color: rgba(0,0,0,0.6); border-color: rgb(136, 136, 241);"/>
+                  <input type="text" id="username" name="username" class="form-control form-control-sm" placeholder="Username" style=" border-color: black;"/>
                 </div>
-  
-                <button class="btn btn-outline-light btn-lg px-3" type="submit" style="color:rgb(136, 136, 241); border-color: rgb(136, 136, 241);">Apply</button>
+                <div class="form-outline form-white mb-4" >
+                  <input type="text" id="tag" name="tag" class="form-control form-control-sm" placeholder="Tag" style=" border-color: black;"/>
+                </div>
+               </div>
+
+                <button class="btn btn-outline-light btn-lg px-3 btn-sm mb-2" type="submit" style="color:rgb(136, 136, 241); border-color: rgb(136, 136, 241);">Apply</button>
               </form>
               </div>
             </div>
@@ -108,23 +121,28 @@ margin-top: 3em;
 
  <div class="col-md-12 col-lg-9 col-xl-9" >
 
+<% let countBlog=0 %> 
+
 <% for(let review of reviews){ %> 
+
+<% countBlog++ %> 
 
   <div class="container border-1 text-dark mb-5"  id="fullBlog">
     
         <div class="container">          
 
     <div id="blogTitles"><%=  review.title %></div>
-  <div id="blogAuthors" class="mt-2">Written by <b> <%= review.author  %>  </b></div>
-
-
+  <div id="blogAuthors" class="mt-2"> <span >Written by</span> <b> <%= review.author  %>  </b>, <span ><%=review.publishDate%></span>  </div>
 
   <div id="blogContents"> <%- review.content %> </div>
 
   <div class="pt-3" id="blogContinues"><a href="/reviews/<%= review._id %>">Continue reading</a></div>
 
-
-  <div id="blogTagss">Tags: #<%= review.tag  %> 
+  <div id="blogTagss">
+    Tags:
+    <% for(let tag of review.tag){ %> 
+     #<%=tag%> 
+     <% } %> 
   </div>
 
 
@@ -134,10 +152,24 @@ margin-top: 3em;
 
 <% } %> 
 
-</div>
+
+<% if(countBlog == 0){ %> 
+  <div class="d-flex justify-content-center" style="height: 200px; margin-top:14.3em ;"> Oops! Nothing to show</div>
+<% } %> 
+  
+
+
 </div>
 
 
+
+</div>
+ 
+<div class="d-flex flex-column justify-content-end" style="height:300px; background-color:#091e5c ;">
+  <div class="d-flex justify-content-center" style="height:50px; background-color:#05133c ;">
+    <div style="color: #999999; font-size: 15px; padding-top: 15px; ">©2022 StratShare All rights reserved</div>
+</div>
+</div>
 
 </body>
 </html>

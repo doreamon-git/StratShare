@@ -18,6 +18,9 @@ const dbUrl = process.env.DB_URL ;
 const MongoDBStore = require("connect-mongo");
 const jsdom = require("jsdom")
 const {JSDOM} = jsdom
+const Review = require('./models/review');
+const Comment = require('./models/comment');
+const catchAsync = require('./utils/catchAsync')
 
 //mongodb://localhost:27017/blogDB
 mongoose.connect(dbUrl, {
@@ -33,9 +36,6 @@ db.once("open", ()=>{
     console.log("Database Connected");
 });
 
-
-
-const Review = require('./models/review');
 const res = require('express/lib/response');
 
 //app.set('views', path.join(__dirname, '\views'))
@@ -114,15 +114,19 @@ app.get('/reviews/draft', isLoggedIn ,async (req, res)=>{
 
 app.get('/reviews/:id', async (req, res)=>{
    const { id } = req.params
-   const review = await Review.findById(id)
+   const review = await Review.findById(id).populate('comments')
    res.render('reviews/show', { review})  
 })
 
 app.post('/reviews',isLoggedIn ,async (req, res)=>{
-   
-   const review = new Review(req.body)
+   const {title, content} = req.body
+   const review = new Review({title, content})
    review.author = req.user.username
    review.draft = false
+   const d = new Date().toDateString()
+   review.publishDate = d.substring(8, 10) + ' ' + d.substring(4, 7) + ' ' + d.substring(11, 15)
+   review.tag = req.body.tag.trim().split(/\s+/)
+
    await review.save()
    res.redirect('/reviews')
 })
@@ -136,12 +140,19 @@ app.get('/reviews/:id/edit', async (req, res)=>{
 app.put('/reviews/:id',isLoggedIn, async (req, res)=>{
     const { id } = req.params
     const review = await Review.findById(id)
-    req.body.draft = false
+
     if(review.author!=req.user.username){
        req.flash('error', 'You do not have permission');
        return res.redirect(`/reviews/${id}`)
     }
-    await Review.findByIdAndUpdate(id, req.body, {runValidators: true, new: true})
+    review.draft = false
+    const d = new Date().toDateString()
+    review.publishDate = d.substring(8, 10) + ' ' + d.substring(4, 7) + ' ' + d.substring(11, 15)
+    review.tag = req.body.tag.trim().split(/\s+/)
+    review.title = req.body.title
+    review.content = req.body.content
+
+    await Review.findByIdAndUpdate(id, review, {runValidators: true, new: true})
     req.flash('success', 'Updated');
     res.redirect('/reviews')
 })
@@ -154,21 +165,36 @@ app.delete('/reviews/:id', isLoggedIn, async (req, res)=>{
         req.flash('error', 'You do not have permission');
         return res.redirect(`/reviews/${id}`)
      }  
+
+    for(let commentId of review.comments){
+        await Comment.findByIdAndDelete(commentId)
+    }
+
     await Review.findByIdAndDelete(id)
     req.flash('success', 'Deleted');
     res.redirect('/reviews') 
 })
 
 app.post('/reviews/filter',async (req, res)=>{
-  const {username} = req.body
-  const reviews = await Review.find({author: username})
+  const {username, tag} = req.body
+  let reviews 
+  if(username!='' && tag!='') reviews= await Review.find({author: username, tag, draft: false})
+  if(username!='' && tag=='') reviews= await Review.find({author: username, draft: false})
+  if(username=='' && tag!='') reviews= await Review.find({tag, draft: false})
+  if(username=='' && tag=='') reviews= await Review.find({draft: false})
+
   res.render('reviews/index', {reviews})       
 })
 
 app.post('/reviews/draft',isLoggedIn, async (req, res)=>{
-    const review = new Review(req.body)
+    const {title, content} = req.body
+    const review = new Review({title, content})
     review.author = req.user.username
     review.draft = true
+    const d = new Date().toDateString()
+    review.publishDate = d.substring(8, 10) + ' ' + d.substring(4, 7) + ' ' + d.substring(11, 15)
+    review.tag = req.body.tag.trim().split(/\s+/)
+
     await review.save()
     res.redirect('/reviews/draft')
  })
@@ -176,15 +202,47 @@ app.post('/reviews/draft',isLoggedIn, async (req, res)=>{
  app.put('/reviews/draft/:id', isLoggedIn, async (req, res)=>{
     const { id } = req.params
     const review = await Review.findById(id)
-    req.body.draft = true
+
     if(review.author!=req.user.username){
         req.flash('error', 'You do not have permission');
         return res.redirect(`/reviews/${id}`)
      }
-    await Review.findByIdAndUpdate(id, req.body, {runValidators: true, new: true})
+     review.draft = true
+     const d = new Date().toDateString()
+     review.publishDate = d.substring(8, 10) + ' ' + d.substring(4, 7) + ' ' + d.substring(11, 15)
+     review.tag = req.body.tag.trim().split(/\s+/)
+     review.title = req.body.title
+     review.content = req.body.content
+
+    await Review.findByIdAndUpdate(id, review, {runValidators: true, new: true})
     req.flash('success', 'Updated');
     res.redirect('/reviews')
 })
+
+app.post('/reviews/:id/comment', isLoggedIn , catchAsync(async (req, res) =>{
+  const review = await Review.findById(req.params.id)
+  const comment = new Comment(req.body) 
+  comment.author = req.user.username
+  const data = new Date()
+  const d = data.toDateString()
+  comment.publishDate =  d.substring(4, 7) + " " + d.substring(8, 10) + ", " + d.substring(11, 15) + " " + data.getHours() + ":" + data.getMinutes()  
+  review.comments.push(comment)
+  await review.save();
+  await comment.save(); 
+  res.redirect(`/reviews/${review._id}`)
+}))
+
+app.delete('/reviews/:id/comments/:commentId', isLoggedIn, catchAsync(async (req,res)=>{
+   const {id, commentId} = req.params
+   const thisComment = await Comment.findById(commentId)
+   if(thisComment.author==req.user.username){
+   await Review.findByIdAndUpdate(id, {$pull: {comments: commentId}})
+   await Comment.findByIdAndDelete(commentId)
+   }
+   res.redirect(`/reviews/${id}`)
+}))
+
+
 
 const port = process.env.PORT || 3000
 app.listen(port, ()=> {
