@@ -112,7 +112,7 @@ app.get('/reviews/draft', isLoggedIn ,async (req, res)=>{
  })
  
 
-app.get('/reviews/:id', async (req, res)=>{
+app.get('/reviews/:id', isLoggedIn, async (req, res)=>{
    const { id } = req.params
    const review = await Review.findById(id).populate('comments')
    res.render('reviews/show', { review})  
